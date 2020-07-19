@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@ssh://liziyuan@113.54.154.45:1024/mnt/disk2/liziyuan/anaconda3/envs/pt10/bin/python3">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$" remote-root="/mnt/disk2/liziyuan/zhouyifeng/deepfakes/dcdd/baselines/xecptionNet" />
+            </list>
+          </settings>
+        </remote-mappings>
+      </list>
+    </list>
+  </component>
+</project>
