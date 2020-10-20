@@ -1,6 +1,7 @@
-# fake-face-detection
-Some collected paper and personal notes relevant to Fake Face Detetection.
-Refer to [592McAvoy](https://github.com/592McAvoy/fake-face-detection)
+# Fake-Face-detection-Generation
+Some collected paper and personal notes relevant to Fake Face Detetection and Generation.
+
+This file refers to [592McAvoy](https://github.com/592McAvoy/fake-face-detection)
 
 
 ## Challenge
@@ -58,3 +59,11 @@ Refer to [592McAvoy](https://github.com/592McAvoy/fake-face-detection)
 
 ### (11) Metrics Learning
 
+# Project-Deepfake Detection
+## Crop the facial area.
+Using the face alignment network FAN to detect the facial landmarks. The original code only provide the case where batch size equal to 1. We modified the code to work on arb. batch size. In `crop_batch_face.py` the FAN is able to detect batch_size face images, which improve the processing cost.
+
+However the frame-extracted dataset is to large, it still takes about 2days to crop the whole datasets (On two RTX2080Ti)
+
+## Validate the Crop results
+In the dataset of baseline we coded two dataset(df++ and celeb_df-v2). Each can be visualised by the `draw_batch` function.
