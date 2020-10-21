@@ -79,6 +79,7 @@ We choose three popular deepfake datasets to conduct our experiments.
 	- manipulate-video
 		- 11 different post-processing method results.
 			- 1000 synthesis video (by using different source and target pair.)
+
 	- [] original face images
 	- [x] manipulated face images
 
@@ -86,6 +87,7 @@ We choose three popular deepfake datasets to conduct our experiments.
 	- YouTube-real (300)
 	- Celeb-synthesis (5639)
 	- Celeb-real (590)
+
 	- [] original face images
 	- [] manipulated face images
 
@@ -96,6 +98,7 @@ We choose three popular deepfake datasets to conduct our experiments.
 		- NeuralTextures (1000)
 		- FaceSwap (1000)
 		- Face2Face (1000)
+		
 	- [x] original face images
 	- [x] manipulated face images
 
