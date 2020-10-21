@@ -80,16 +80,16 @@ We choose three popular deepfake datasets to conduct our experiments.
 		- 11 different post-processing method results.
 			- 1000 synthesis video (by using different source and target pair.)
 
-	- [] original face images
-	- [x] manipulated face images
+- [] original face images
+- [x] manipulated face images
 
 - Celeb-DF-2.0 [paper](https://arxiv.org/abs/1909.12962) and [github](https://github.com/yuezunli/celeb-deepfakeforensics)
 	- YouTube-real (300)
 	- Celeb-synthesis (5639)
 	- Celeb-real (590)
 
-	- [] original face images
-	- [] manipulated face images
+- [] original face images
+- [] manipulated face images
 
 - FaceForensics++ [paper](https://arxiv.org/abs/1901.08971) and [github](https://github.com/ondyari/FaceForensics)
 	- original_sequences(from youtube: 1000.) *which is regarded as the target video in DeeperForensics*
@@ -98,8 +98,8 @@ We choose three popular deepfake datasets to conduct our experiments.
 		- NeuralTextures (1000)
 		- FaceSwap (1000)
 		- Face2Face (1000)
-		
-	- [x] original face images
-	- [x] manipulated face images
+
+- [x] original face images
+- [x] manipulated face images
 
 For fake face synthesize, only need the real video. For fake face detection, we need both the fake and real video. However, using whole image to conduct the detection is time-consuming and effectiveless, we focus on the face areas to imporve the performance of our methods. We use the FAN to crop the facial area for the real and fake (maniplate) images. Each facial areas is face centered and padding with 0 when it out of bounds. 
