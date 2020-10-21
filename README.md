@@ -67,3 +67,28 @@ However the frame-extracted dataset is to large, it still takes about 2days to c
 
 ## Validate the Crop results
 In the dataset of baseline we coded two dataset(df++ and celeb_df-v2). Each can be visualised by the `draw_batch` function.
+
+## Dataset:
+We choose three popular deepfake datasets to conduct our experiments.
+- DeeperForensics-1.0 [paper](https://arxiv.org/abs/2001.03024.pdf) [github](https://github.com/EndlessSora/DeeperForensics-1.0)
+	- source-video
+		- 100 people with different identity.
+			- 9 different light diraction.
+				- 8 different expression.
+					-7 different camera diraction.
+	- manipulate-video
+		- 11 different post-processing method results.
+			- 1000 synthesis video (by using different source and target pair.)
+
+- Celeb-DF-2.0 [paper](https://arxiv.org/abs/1909.12962) [github](https://github.com/yuezunli/celeb-deepfakeforensics)
+	- YouTube-real (300)
+	- Celeb-synthesis (5639)
+	- Celeb-real (590)
+
+- FaceForensics++ [paper](https://arxiv.org/abs/1901.08971) [github](https://github.com/ondyari/FaceForensics)
+	- original_sequences(from youtube: 1000.) *which is regarded as the target video in DeeperForensics*
+	- manipulated_sequences
+		- Deepfakes (1000)
+		- NeuralTextures (1000)
+		- FaceSwap (1000)
+		- Face2Face (1000)
