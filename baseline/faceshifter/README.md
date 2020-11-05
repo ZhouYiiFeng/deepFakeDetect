@@ -49,6 +49,13 @@ We choose three popular deepfake datasets to conduct our experiments.
 
 For fake face synthesize, only need the real video. For fake face detection, we need both the fake and real video. However, using whole image to conduct the detection is time-consuming and ineffective, we focus on the face areas to imporve the performance of our methods. We use the FAN to crop the facial area for the real and fake (maniplate) images. Each facial areas is face centered and padding with 0 when it out of bounds. 
 
+### Crop the facial area.
+Using the face alignment network FAN to detect the facial landmarks. The original code only provide the case where batch size equal to 1. We modified the code to work on arb. batch size. In `crop_batch_face.py` the FAN is able to detect batch_size face images, which improve the processing cost.
 
-### Experiments:
+However the frame-extracted dataset is to large, it still takes about 2days to crop the whole datasets (On two RTX2080Ti)
+
+### Validate the Crop results
+In the dataset of baseline we coded two dataset(df++ and celeb_df-v2). Each can be visualised by the `draw_batch` function.
+
+## Experiments:
 Implement in Pytorch.
