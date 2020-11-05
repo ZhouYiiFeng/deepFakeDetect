@@ -75,6 +75,9 @@ This file refers to [592McAvoy](https://github.com/592McAvoy/fake-face-detection
 ### (11) Metrics Learning
 
 # Project-Deepfake Detection
+## XceptionNet
+- [code](https://github.com/ZhouYiiFeng/deepFakeDetect/tree/master/baseline/xceptionNet)
+
 ## Crop the facial area.
 Using the face alignment network FAN to detect the facial landmarks. The original code only provide the case where batch size equal to 1. We modified the code to work on arb. batch size. In `crop_batch_face.py` the FAN is able to detect batch_size face images, which improve the processing cost.
 
@@ -139,10 +142,6 @@ For fake face synthesize, only need the real video. For fake face detection, we 
  
 # Project-Deepfake Generation
 ## Face Shifter
-- [code](https://github.com/Heonozis/FaceShifter-pytorch)
+- [code](https://github.com/ZhouYiiFeng/deepFakeDetect/tree/master/baseline/faceshifter)
 - [paper](https://arxiv.org/abs/1912.13457)
 
-### Experiments:
-Implement in Pytorch:
-Dataset:
-1. 
