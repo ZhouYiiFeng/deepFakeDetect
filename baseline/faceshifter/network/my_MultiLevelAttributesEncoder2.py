@@ -33,6 +33,17 @@ import numpy as np
 import torch.nn.functional as F
 
 
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        m.weight.data.normal_(0, 0.001)
+        m.bias.data.zero_()
+    if isinstance(m, nn.Conv2d):
+        nn.init.xavier_normal_(m.weight.data)
+
+    if isinstance(m, nn.ConvTranspose2d):
+        nn.init.xavier_normal_(m.weight.data)
+
+
 class DownSampleConv(nn.Module):
     def __init__(self, in_ch, ou_ch, kernel_size=4, stride=2, padding=1):
         super(DownSampleConv, self).__init__()
@@ -98,9 +109,7 @@ class MultiLevelAttributesEncoder(nn.Module):
         self.down_convs.append(DownSampleConv(o_ch, o_ch))
         self.transpose_convs.append(UpSampleConv(o_ch, o_ch))
         self.transpose_convs = self.transpose_convs[::-1]
-
-
-
+        self.apply(init_weights)
 
     def forward(self, input):
         ds_features = []

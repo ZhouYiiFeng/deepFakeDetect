@@ -1,10 +1,25 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+---------------------------------
+@ Author : JoeyF.Zhou           -
+@ Home Page : www.zhoef.com     -
+@ From : UESTC                  - 
+---------------------------------
+@ Date : 11/6/2020 7:43 PM
+@ Project Name : FaceShifter-pytorch-master
+@ Description :
+    This code is writen by joey.
+    @ function:
+    
+"""
 from network.MultiScaleDiscriminator import *
 from torch.utils.data import DataLoader
 from face_modules.model import Backbone
 from datasets.Faceforensis_Dataset import FaceForensicsDataset
 import torch.nn.functional as F
 import torch.optim as optim
-from network.aei import *
+from network.my_aei import *
 from apex import amp
 import torchvision
 import visdom
@@ -13,26 +28,27 @@ import time
 import cv2
 import os
 import sys
+from utils.util import *
 sys.path.append('./datasets')
 sys.path.append('.')
 
-gpu_id = 1
+gpu_id = 2
 os.environ['CUDA_VISIBLE_DEVICES'] = "%d" % gpu_id
-vis = visdom.Visdom(server='127.0.0.1', env='se_fs', port=8097) # 8097
-batch_size = 8
+batch_size = 1
 lr_G = 4e-4
-lr_D = 4e-4
+lr_D = 1e-4
 max_epoch = 2000
 show_step = 20  # visdom show step
 save_epoch = 1  # checkpoints save_epoch
-save_iteration = 10000  # checkpoints save_epoch
-save_img_iteration = 5000  # checkpoints save_epoch
+save_iteration = 10000  # checkpoints save iteration
+save_img_iteration = 5000  # generated fake face image save iteration
 display_info_step = 5  # info display step
 model_save_path = './checkpoints/'
 optim_level = 'O1'
 inner_path = "./mid_results"
-model_name = "Test02FF++"
-load_pretrian_model = True
+model_name = "myAeiBs1"
+vis = visdom.Visdom(server='127.0.0.1', env=model_name, port=8097) # 8097
+load_pretrian_model = False
 use_apex = False
 
 
@@ -45,8 +61,9 @@ if not os.path.exists(inner_dir):
 
 device = torch.device('cuda:%d' % gpu_id)
 
-G = AEI_Net(c_id=512).to(device)
+G = AETNet().to(device)
 D = MultiscaleDiscriminator(input_nc=3, n_layers=6, norm_layer=torch.nn.InstanceNorm2d).to(device)
+
 G.train()
 D.train()
 
@@ -61,46 +78,37 @@ if use_apex:
     G, opt_G = amp.initialize(G, opt_G, opt_level=optim_level)
     D, opt_D = amp.initialize(D, opt_D, opt_level=optim_level)
 
-
+resume_epoch = 0
+resume_iter = 0
+l_adv = 1
+l_att = 10
+l_id = 10
+l_rec = 5
 if load_pretrian_model:
-
-    G.load_state_dict(torch.load(os.path.join(checkponits_dir, 'G_latest.pth')))
-    D.load_state_dict(torch.load(os.path.join(checkponits_dir, 'D_latest.pth')))
-
+    checkpoint = torch.load(os.path.join(checkponits_dir,"model_latest.pth"))
+    G.load_state_dict(checkpoint['Gnet'])
+    D.load_state_dict(checkpoint['Dnet'])
+    opt_G.load_state_dict(checkpoint['optimizerG'])
+    opt_D.load_state_dict(checkpoint['optimizerD'])
+    resume_epoch = checkpoint['epoch']
+    resume_iter = checkpoint['iter']
+    params = torch.load(os.path.join(checkponits_dir,"params.pth"))
+    l_adv = params['l_adv']
+    l_att = params['l_att']
+    l_id = params['l_id']
+    l_rec = params['l_rec']
 
 dataset = FaceForensicsDataset(draw_landmarks=False)
-
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, drop_last=True)
-
 
 MSE = torch.nn.MSELoss()
 L1 = torch.nn.L1Loss()
 
-
-def hinge_loss(X, positive=True):
-    if positive:
-        return torch.relu(1-X).mean()
-    else:
-        return torch.relu(X+1).mean()
-
-
-def get_grid_image(X):
-    X = X[:8]
-    X = torchvision.utils.make_grid(X.detach().cpu(), nrow=X.shape[0]) * 0.5 + 0.5
-    return X
-
-
-def make_image(Xs, Xt, Y):
-    Xs = get_grid_image(Xs)
-    Xt = get_grid_image(Xt)
-    Y = get_grid_image(Y)
-    return torch.cat((Xs, Xt, Y), dim=1)
-
 # print(torch.backends.cudnn.benchmark)
 inner_count = 0 # save mid results idx. -> idx.jpg
 
-for epoch in range(0, max_epoch):
-    for iteration, data in enumerate(dataloader):
+for epoch in range(resume_epoch, max_epoch):
+    for iteration, data in enumerate(dataloader, resume_iter):
         start_time = time.time()
         faces, landmarks = data
         face, iden_face, dif_face = faces
@@ -135,18 +143,13 @@ for epoch in range(0, max_epoch):
             ZY, Y_feats = arcface(F.interpolate(Y_aligned, [112, 112], mode='bilinear', align_corners=True))
             L_id = (1 - torch.cosine_similarity(embed, ZY, dim=1)).mean()
 
-            Y_attr = G.get_attr(Y)
+            Y_attr = G.getAttributes(Y)
             L_attr = 0
             for i in range(len(Xt_attr)):
                 L_attr += torch.mean(torch.pow(Xt_attr[i] - Y_attr[i], 2).reshape(batch_size, -1), dim=1).mean()
             L_attr /= 2.0
             L_rec = 0.5 * MSE(Y, Xt) * same_person
             # L_rec = torch.sum(0.5 * torch.mean(torch.pow(Y - Xt, 2).reshape(batch_size, -1), dim=1) * same_person)
-
-            l_adv = 1
-            l_att = 10
-            l_id = 10
-            l_rec = 5
 
             lossG = l_adv*L_adv + l_att*L_attr + l_id*L_id + l_rec*L_rec
 
@@ -197,13 +200,32 @@ for epoch in range(0, max_epoch):
                 inner_count += 1
 
         if iteration % save_iteration == 0:
-            # image = make_image(Xs, Xt, Y)
-            # cv2.imwrite(inner_dir + '/%s.jpg' % (str(inner_count)), image.transpose([1, 2, 0])*255)
-            # inner_count += 1
-            torch.save(G.state_dict(), checkponits_dir + '/G_latest.pth')
-            torch.save(D.state_dict(), checkponits_dir + '/D_latest.pth')
-            torch.save(G.state_dict(), checkponits_dir + '/G_ep_%s_iter_%s_.pth' % (epoch,iteration))
-            torch.save(D.state_dict(), checkponits_dir + '/D_ep_%s_iter_%s_.pth' % (epoch,iteration))
+            """
+            checkpoint = torch.load(os.path.join(checkponits_dir,"model_latest.pth"))
+            G.load_state_dict(checkpoint['Gnet'])
+            D.load_state_dict(checkpoint['Dnet'])
+            opt_G.load_state_dict(checkpoint['optimizerG'])
+            opt_D.load_state_dict(checkpoint['optimizerD'])
+            resume_epoch = checkpoint['epoch']
+            resume_iter = checkpoint['iter']
+            """
+            state = {
+                'Gnet': G.state_dict(),
+                'Dnet': D.state_dict(),
+                'optimizerG': opt_G.state_dict(),
+                'optimizerD': opt_D.state_dict(),
+                'epoch': epoch,
+                'iter': iteration
+            }
+            params_state = {
+                'l_adv': l_adv,
+                'l_att': l_att,
+                'l_id': l_id,
+                'l_rec': l_rec
+            }
+            torch.save(state, checkponits_dir + '/model_latest.pth')
+            torch.save(params_state, checkponits_dir + '/params.pth')
+            torch.save(state, checkponits_dir + '/ep_%s_iter_%s_.pth' % (epoch, iteration))
 
         if iteration % display_info_step == 0:
             info = "Train: [GPU %s], Batch_time: %s \n" % (device, str(batch_time))
@@ -217,3 +239,4 @@ for epoch in range(0, max_epoch):
             info += "\t\t%25s = %f\n" % ("L_attr_all", L_attr_all)
             info += "\t\t%25s = %f\n" % ("L_rec_all",  L_rec_all)
             print(info)
+

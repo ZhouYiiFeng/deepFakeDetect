@@ -20,6 +20,8 @@
         Input:
             1. attrs_num from 64 to more.
             2. zid the identity code extract from facial module.
+    @ edit:
+        consider to use the min(nf, 1024.)
 """
 import torch
 import torch.nn as nn
