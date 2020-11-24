@@ -2,8 +2,6 @@
 Some collected paper and personal notes relevant to Fake Face Detetection and Generation.
 
 This file refers to [592McAvoy](https://github.com/592McAvoy/fake-face-detection)
-
-
 ## Challenge
 
 - [Facebook] [Deepfake Detection Challenge]( https://www.kaggle.com/c/deepfake-detection-challenge/overview )

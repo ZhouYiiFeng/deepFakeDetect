@@ -1,4 +1,5 @@
 # Project-Deepfake Detection
+Here are some reimplements of SOTA methods.
 ## XceptionNet
 - [code](https://github.com/ZhouYiiFeng/deepFakeDetect/tree/master/baseline/xceptionNet)
 
@@ -16,7 +17,7 @@
 - [paper](https://arxiv.org/abs/1912.13457)
 Here are some results:
 <p align='center'>  
-  <img src='imgs/results1.png' width='440'/>  
+  <img src='imgs/results.png' width='440'/>  
 </p>
 
 <p align='center'>
