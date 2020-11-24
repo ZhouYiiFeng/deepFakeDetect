@@ -15,6 +15,7 @@ Here are some reimplements of SOTA methods.
 ## Face Shifter
 - [code](https://github.com/ZhouYiiFeng/deepFakeDetect/tree/master/baseline/faceshifter)
 - [paper](https://arxiv.org/abs/1912.13457)
+
 Here are some results:
 <p align='center'>  
   <img src='imgs/results.png' width='440'/>  
