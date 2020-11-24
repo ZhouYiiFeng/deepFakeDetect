@@ -30,3 +30,5 @@ Here are some results:
 
 The first Model is in the condition of `lr_G` = 4e-4 `lr_D` = 4e-4 `l_adv` = 1 `l_att`=10 `L_id`=10 `L_rec`=5 `Bt_s` = 2
 Also we train the model of batch_size of 8, but the network do not have the same down-sample layer as original paper. Also we up sample the iden code to 8x8 size by 3 `ConvTranspose2d` in ADDGenerator.
+
+Trained on RTX2080Ti for 5-7 days.

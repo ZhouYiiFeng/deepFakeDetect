@@ -23,7 +23,7 @@ class ADD(nn.Module):
     def __init__(self, in_ch, o_ch, attr_ch, zid_ch=256, mode='SPAD'):
         super(ADD, self).__init__()
         self.IN = nn.InstanceNorm2d(in_ch, affine=False)
-        self.h_conv = nn.Conv2d(in_channels=in_ch, out_channels=in_ch, stride=1,kernel_size=3, padding=1)
+        self.h_conv = nn.Conv2d(in_channels=in_ch, out_channels=1, stride=1,kernel_size=3, padding=1)
         self.r_att_conv = nn.Conv2d(in_channels=attr_ch, out_channels=in_ch, stride=1,kernel_size=3, padding=1)
         self.beta_att_conv = nn.Conv2d(in_channels=attr_ch, out_channels=in_ch, stride=1,kernel_size=3, padding=1)
         self.zid_FC1 = nn.Linear(zid_ch, in_ch)
