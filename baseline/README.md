@@ -29,7 +29,10 @@ Here are some results:
   <img src='imgs/results3.png' width='440'/>
 </p>
 
-The first Model is in the condition of `lr_G` = 4e-4 `lr_D` = 4e-4 `l_adv` = 1 `l_att`=10 `L_id`=10 `L_rec`=5 `Bt_s` = 2
-Also we train the model of batch_size of 8, but the network do not have the same down-sample layer as original paper. Also we up sample the iden code to 8x8 size by 3 `ConvTranspose2d` in ADDGenerator.
+The first Model is in the condition of `lr_G` = 4e-4 `lr_D` = 4e-4 `l_adv` = 1 `l_att`=10 `L_id`=10 `L_rec`=5 `Bt_s` = 2.
+The results of first row if the provided code: V1.0.
+
+In addition we train the model of batch_size of 8, but the network do not have the same down-sample layer as original paper. 
+In this experiencd, we up-sample the iden code (512,1,1) to 8x8 size by 3 `ConvTranspose2d` in ADDGenerator.
 
 Trained on RTX2080Ti for 5-7 days.
