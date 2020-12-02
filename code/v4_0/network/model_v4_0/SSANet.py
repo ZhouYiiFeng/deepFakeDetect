@@ -44,17 +44,19 @@ class SSANet(nn.Module):
         self.multi_level_concrete_decoder = MultiLevelConcreteDecoder()
         self.apply(init_weights)
 
-    def build_pyr(self, image, num=6):
+    def build_pyr(self, image, num=5):
         pyr = []
+        pyr.append(F.interpolate(image, scale_factor=0.5, mode='bilinear', align_corners=True))
         for i in range(num):
-            pyr.append(F.interpolate(image, scale_factor=0.5, mode='bilinear', align_corners=True))
+            t = F.interpolate(pyr[-1], scale_factor=0.5, mode='bilinear', align_corners=True)
+            pyr.append(t)
         return pyr
 
     def forward(self, bcg, sface, tface, ldmm, mask):
         bg_attrs = self.multi_level_attribute_encoder(bcg, mask)
-        sface_attrs = self.multi_level_face_encoder(sface, 6)
-        tface_pyr = self.build_pyr(tface)
-        mix_face_attrs = self.multi_level_SSA_encoder(sface, sface_attrs, tface_pyr, ldm)
+        sface_attrs = self.multi_level_face_encoder(sface)
+        tface_pyr = self.build_pyr(tface, 6)
+        mix_face_attrs, masks_pre_pyr = self.multi_level_SSA_encoder(sface, sface_attrs, tface_pyr, ldm)
         yt = self.multi_level_concrete_decoder(bg_attrs, mix_face_attrs)
         return yt
 
